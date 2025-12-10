@@ -6,11 +6,14 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
+import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
@@ -64,6 +67,47 @@ public class MainTeleOp extends CommandOpMode {
             .whileHeld(new ShooterSpinUpCommand(robot.shooter, 4800.0))
             .whenReleased(new ShooterSpinUpCommand(robot.shooter, 0.0));
 
+
+        operator.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed(new SequentialCommandGroup(
+                        new InstantCommand(robot.intake::forward),
+                        new InstantCommand(()-> robot.feederR.feed(Feeder.FeederState.FORWARD)
+                        )))
+                .whenReleased(new SequentialCommandGroup(
+                        new InstantCommand(robot.intake::off),
+                        new InstantCommand(()-> robot.feederR.feed(Feeder.FeederState.STOP)
+                        )));
+
+
+
+        operator.getGamepadButton(GamepadKeys.Button.B)
+                .whenPressed(new SequentialCommandGroup(
+                        new InstantCommand(robot.intake::reverse),
+                        new InstantCommand(()-> robot.feederR.feed(Feeder.FeederState.REVERSE)
+                        )))
+                        .whenReleased(new SequentialCommandGroup(
+                                new InstantCommand(robot.intake::off),
+                                new InstantCommand(()-> robot.feederR.feed(Feeder.FeederState.STOP)
+                                )));
+
+
+
+//        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+
+
+        /* ******************************************************************************* */
+        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(new InstantCommand(robot.mecanumDrive::enableSnailDrive))
+                .whenReleased(new InstantCommand(robot.mecanumDrive::disableSnailDrive));
+
+
+//        driver.getGamepadButton(GamepadKeys.Button.A).aline to target
+
+
+//        driver.getGamepadButton(GamepadKeys.Button.B).shoot near
+
+
+//        driver.getGamepadButton(GamepadKeys.Button.Y). shoot far
 
     }
 

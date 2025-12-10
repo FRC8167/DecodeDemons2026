@@ -7,18 +7,14 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class Intake extends SubsystemBase{
-    //TODO:  Write this subsystem similar to Feeder.  You will need to define the motor properties.
-    //such as BRAKE vs FLOAT
-    private MotorEx motor;
 
+    private MotorEx motor;
 
     private boolean isRunning;
 
-
-
     private Double fSpeed = 0.7;
-
     private Double rSpeed = -0.4;
+
 
     public Intake (MotorEx intakeMotor){
         motor = intakeMotor;
@@ -31,6 +27,7 @@ public class Intake extends SubsystemBase{
         isRunning = false;
     }
 
+
     public void forward() {
         if (isRunning){
             off();
@@ -39,12 +36,18 @@ public class Intake extends SubsystemBase{
             isRunning = true;}
     }
 
+
     public void reverse(){
         if (isRunning){
             off();
         }else{
         motor.set(rSpeed);
         isRunning = true;}
+    }
+
+
+    public boolean getIntakeState(){
+        return isRunning;
     }
 }
 

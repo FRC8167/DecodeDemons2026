@@ -42,14 +42,6 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
     public static OpModeType OP_MODE_TYPE;
     static List<LynxModule> ctrlHubs;
 
-    public MotorEx driveMotorRF;
-    public MotorEx driveMotorLF;
-    public MotorEx driveMotorRR;
-    public MotorEx driveMotorLR;
-
-    public MotorEx intakeMotor;
-    public MotorEx shooterMotor;
-
 
     public Follower follower;
 
@@ -73,15 +65,15 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
     public void init(HardwareMap hardwareMap) throws InterruptedException {
         // Hardware
-        driveMotorRF = new MotorEx(hardwareMap, "RightFront").setCachingTolerance(0.01);
-        driveMotorLF = new MotorEx(hardwareMap, "LeftFront").setCachingTolerance(0.01);
-        driveMotorLR = new MotorEx(hardwareMap, "LeftRear").setCachingTolerance(0.01);
-        driveMotorRR = new MotorEx(hardwareMap, "RightRear").setCachingTolerance(0.01);
+        MotorEx driveMotorRF = new MotorEx(hardwareMap, "RightFront").setCachingTolerance(0.01);
+        MotorEx driveMotorLF = new MotorEx(hardwareMap, "LeftFront").setCachingTolerance(0.01);
+        MotorEx driveMotorLR = new MotorEx(hardwareMap, "LeftRear").setCachingTolerance(0.01);
+        MotorEx driveMotorRR = new MotorEx(hardwareMap, "RightRear").setCachingTolerance(0.01);
 
         follower = Constants.createFollower(hardwareMap);
 
-        intakeMotor = new MotorEx(hardwareMap, "Intake").setCachingTolerance(0.01);
-        shooterMotor = new MotorEx(hardwareMap, "Shooter").setCachingTolerance(0.01);
+        MotorEx intakeMotor = new MotorEx(hardwareMap, "Intake").setCachingTolerance(0.01);
+        MotorEx shooterMotor = new MotorEx(hardwareMap, "Shooter").setCachingTolerance(0.01);
 
         CRServo feederServoF = new CRServo(hardwareMap, "feederServoF");
         CRServo feederServoR = new CRServo(hardwareMap, "feederServoR");
