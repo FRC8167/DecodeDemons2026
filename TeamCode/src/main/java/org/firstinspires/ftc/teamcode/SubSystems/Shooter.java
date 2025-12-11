@@ -20,38 +20,24 @@ public class Shooter extends SubsystemBase {
 
         //Panels Configurables
         public static double targetRPM = 0.0;
-        public static double kv = 0.0004;
-        public static double kp = 0.002;
-        public static double ki = 0.02;
-        public static double kd = 0.00003;
-        public static double tolerance= 200.0;  //RPMs
+        public static double kv = 0.00045;
+        public static double kp = 0.00045;
+        public static double ki = 0.05;
+        public static double kd = 0.00008;
+        public static double tolerance= 50.0;  //RPMs
 
-    public double RPM1;
-    public double RPM2;
-    public double RPM3;
-    public double RPM4;
-    public double RPM5;
-    public double RPM6;
-    public double RPM7;
-    public double RPM8;
-    public double RPM9;
-    public double RPM10;
 
 
 
     public static final InterpLUT distanceToRPM;
         static{
             distanceToRPM = new InterpLUT();
-            distanceToRPM.add(0.0, 0.0);
-            distanceToRPM.add(12.0, 0.0);
-            distanceToRPM.add(24.0, 0.0);
-            distanceToRPM.add(36.0, 0.0);
-            distanceToRPM.add(48.0, 0.0);
-            distanceToRPM.add(60.0, 0.0);
-            distanceToRPM.add(72.0, 0.0);
-            distanceToRPM.add(84.0, 0.0);
-            distanceToRPM.add(96.0, 0.0);
-            distanceToRPM.add(108.0, 5800);  //feet and RPM
+            distanceToRPM.add(20.0, 1743.0);
+            distanceToRPM.add(66.7, 3000.0);
+            distanceToRPM.add(87.0, 3200.0);
+            distanceToRPM.add(116.0, 4000.0);
+            distanceToRPM.add(144.0, 4800.0);
+            //in and RPM
             distanceToRPM.createLUT();
         }
 

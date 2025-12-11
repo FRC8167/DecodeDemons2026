@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.seattlesolvers.solverslib.hardware.SensorColor;
 
 import org.firstinspires.ftc.teamcode.Cogintilities.TeamConstants;
 
@@ -10,8 +10,8 @@ public class ColorMatch implements TeamConstants {
     RevColorSensorV3 colorSensor;
 
 
-    public ColorMatch(RevColorSensorV3 colorSensor) {
-        this.colorSensor = colorSensor;
+    public ColorMatch(SensorColor colorSensor) {
+//        this.colorSensor = colorSensor;
     }
 
     //Get the raw RGB Values

@@ -10,14 +10,17 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.SubSystems.ColorMatch;
 import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
+import org.firstinspires.ftc.teamcode.SubSystems.RGBLight;
 import org.firstinspires.ftc.teamcode.SubSystems.Shooter;
 import org.firstinspires.ftc.teamcode.SubSystems.Vision;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import com.pedropathing.follower.Follower;
+import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 
 
 import java.util.List;
@@ -56,10 +59,11 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
     public Intake intake;
     public Shooter shooter;
-    public SensorColor colorSensor;
+    public SensorColor sensorColor;
     public Vision vision;
     public Feeder feederF, feederR;
-    public Shooter shooterSubsystem;
+    public RGBLight rgbLight;
+    public ColorMatch colorMatch;
 
 
 
@@ -78,6 +82,9 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         CRServo feederServoF = new CRServo(hardwareMap, "feederServoF");
         CRServo feederServoR = new CRServo(hardwareMap, "feederServoR");
 
+        ServoEx rgbServo = new ServoEx(hardwareMap, "rgbServo");
+        sensorColor = new SensorColor(hardwareMap, "sensorColor");
+
 
         webCam1 = hardwareMap.get(WebcamName.class, "Webcam1");
         //limelight = hwMap.get(Limelight3A.class, "limelight");
@@ -95,8 +102,10 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         feederF  = new Feeder(feederServoF);
         feederR = new Feeder(feederServoR);
         shooter = new Shooter(shooterMotor);
-
         vision  = new Vision(webCam1);
+//        rgbLight = new RGBLight((com.seattlesolvers.solverslib.hardware.ServoEx) rgbServo);
+//        colorMatch = new ColorMatch(sensorColor);
+
 
 
         // Register Subsystems with the Command Scheduler

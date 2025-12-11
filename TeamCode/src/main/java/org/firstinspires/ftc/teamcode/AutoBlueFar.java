@@ -6,6 +6,11 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+
+import org.firstinspires.ftc.teamcode.Commands.DetectArtifactCommand;
+import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 //@Disabled
@@ -58,12 +63,17 @@ public class AutoBlueFar extends CommandOpMode {
         }
         buildPaths();
 
-        schedule();
+        schedule(new DetectArtifactCommand(robot.rgbLight, robot.colorMatch, robot.shooter));
+        schedule(new VisionCommand(robot.vision));
+        schedule(
+                new SequentialCommandGroup()
+        );
     }
 
     @Override
     public void run() {
         super.run();
+        AprilTagDetection tag = robot.vision.getFirstTargetTag();
         robot.follower.update();
         robot.follower.getPose();
         telemetry.addData("X:  ", robot.follower.getPose().getX());

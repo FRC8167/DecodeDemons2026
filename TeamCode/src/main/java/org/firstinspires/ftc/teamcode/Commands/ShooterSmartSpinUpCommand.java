@@ -3,16 +3,17 @@ package org.firstinspires.ftc.teamcode.Commands;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Shooter;
+import org.firstinspires.ftc.teamcode.SubSystems.Vision;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-public class ShooterSpinUpATCommand extends CommandBase {
+public class ShooterSmartSpinUpCommand extends CommandBase {
 
     private final Shooter shooter;
-    private AprilTagDetection tag;
+    private final Vision vision;
 
-    public ShooterSpinUpATCommand(Shooter shooterSubsystem, AprilTagDetection tag) {
+    public ShooterSmartSpinUpCommand(Shooter shooterSubsystem, Vision vision) {
         this.shooter = shooterSubsystem;
-        this.tag = tag;
+        this.vision = vision;
     }
 
     @Override
@@ -22,7 +23,7 @@ public class ShooterSpinUpATCommand extends CommandBase {
 
     @Override
     public void execute() {
-        shooter.smartVelocity(tag.ftcPose.range);
+        shooter.smartVelocity(vision.getDistanceToGoal());
     }
 
     @Override

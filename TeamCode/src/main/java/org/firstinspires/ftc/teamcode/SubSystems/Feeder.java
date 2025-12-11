@@ -34,15 +34,20 @@ public class Feeder extends SubsystemBase {
         switch(state){
             case FORWARD:
                 servo.set(-1.0);
+                break;
 
             case REVERSE:
                 servo.set(1.0);
+                break;
 
             case STOP:
                 servo.set(0.0);
+                break;
 
         }
     }
 
-
+    public FeederState getState() {
+        return state;
+    }
 }

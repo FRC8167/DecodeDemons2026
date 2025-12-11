@@ -71,11 +71,11 @@ public class MainTeleOp extends CommandOpMode {
         operator.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(new SequentialCommandGroup(
                         new InstantCommand(robot.intake::forward),
-                        new InstantCommand(()-> robot.feederR.feed(Feeder.FeederState.FORWARD)
+                        new InstantCommand(()-> robot.feederF.feed(Feeder.FeederState.FORWARD)
                         )))
                 .whenReleased(new SequentialCommandGroup(
                         new InstantCommand(robot.intake::off),
-                        new InstantCommand(()-> robot.feederR.feed(Feeder.FeederState.STOP)
+                        new InstantCommand(()-> robot.feederF.feed(Feeder.FeederState.STOP)
                         )));
 
 
@@ -83,16 +83,19 @@ public class MainTeleOp extends CommandOpMode {
         operator.getGamepadButton(GamepadKeys.Button.B)
                 .whenPressed(new SequentialCommandGroup(
                         new InstantCommand(robot.intake::reverse),
-                        new InstantCommand(()-> robot.feederR.feed(Feeder.FeederState.REVERSE)
+                        new InstantCommand(()-> robot.feederF.feed(Feeder.FeederState.REVERSE)
                         )))
                         .whenReleased(new SequentialCommandGroup(
                                 new InstantCommand(robot.intake::off),
-                                new InstantCommand(()-> robot.feederR.feed(Feeder.FeederState.STOP)
+                                new InstantCommand(()-> robot.feederF.feed(Feeder.FeederState.STOP)
                                 )));
 
 
 
 //        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+
+
+//        operator.getGamepadButton(GamepadKeys.Button.Y)
 
 
         /* ******************************************************************************* */
@@ -128,6 +131,23 @@ public class MainTeleOp extends CommandOpMode {
             telemetry.addLine("No target tags (20–24) detected.");
         }
 
+
+//       if (gamepad2.right_trigger > 0.3) {
+//           robot.feederR.feed(Feeder.FeederState.FORWARD);
+//           robot.feederF.feed(Feeder.FeederState.FORWARD);
+//
+//       }else{
+//           robot.feederR.feed(Feeder.FeederState.STOP);
+//           robot.feederF.feed(Feeder.FeederState.STOP);
+//       }
+
+
+
+
+
+
+
+
         telemetry.addData("autoEndPose", autoEndPose.toString());
         telemetry.addData("FollowerX", Math.round(robot.follower.getPose().getX()*100)/100.0);
         telemetry.addData("FollowerY", Math.round(robot.follower.getPose().getY()*100)/100.0);
@@ -137,6 +157,7 @@ public class MainTeleOp extends CommandOpMode {
         telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getRPM());
         telemetry.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
 
+        telemetry.addData("FeederState?", robot.feederF.getState());
         telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
 
         telemetryM.update(telemetry);

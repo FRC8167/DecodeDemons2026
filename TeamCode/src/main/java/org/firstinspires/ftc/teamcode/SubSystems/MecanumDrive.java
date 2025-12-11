@@ -14,7 +14,7 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
  * Handles low-level motor control and odometry updates.
  * Operator input handled in a separate DriveCommand.
  */
-public class MecanumDrive extends SubsystemBase {
+public class  MecanumDrive extends SubsystemBase {
 
     private final MotorEx frontLeft, backLeft, frontRight, backRight;
 
