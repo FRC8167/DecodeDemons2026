@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase {
         public static double kp = 0.00045;
         public static double ki = 0.05;
         public static double kd = 0.00008;
-        public static double tolerance= 50.0;  //RPMs
+        public static double tolerance= 100.0;  //RPMs
 
 
 
