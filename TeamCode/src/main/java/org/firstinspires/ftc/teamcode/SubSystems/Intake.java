@@ -12,8 +12,8 @@ public class Intake extends SubsystemBase{
 
     private boolean isRunning;
 
-    private Double fSpeed = 0.7;
-    private Double rSpeed = -0.4;
+    private Double fSpeed = 0.9;
+    private Double rSpeed = -0.7;
 
 
     public Intake (MotorEx intakeMotor){

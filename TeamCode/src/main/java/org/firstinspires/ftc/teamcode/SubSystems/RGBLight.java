@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.Servo;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
-import com.seattlesolvers.solverslib.hardware.ServoEx;
+import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 
 public class RGBLight extends SubsystemBase {
-    private final ServoEx rgbServo;
+    private final com.seattlesolvers.solverslib.hardware.servos.ServoEx rgbServo;
 
     //  From GoBilda documentation:  https://www.gobilda.com/rgb-indicator-light-pwm-controlled/
     //  ?srsltid=AfmBOorszs1pIzJrXAfdvvBgkZv74EqZFmsV0VvsG6dhlL0ph21glPFM
@@ -44,7 +44,7 @@ public class RGBLight extends SubsystemBase {
         setColor(LightColor.OFF); // default
     }
 
-   //set cases
+    //set cases
     private double colorToPosition(LightColor color) {
         switch (color) {
             case RED:     return RED_POS;
@@ -65,7 +65,7 @@ public class RGBLight extends SubsystemBase {
     //Set solid color
     public void setColor(LightColor color) {
         this.currentColor = color;
-//        rgbServo.set(colorToPosition(color));
+        rgbServo.set(colorToPosition(color));
     }
 
     //Turn off light is needed somewhere
@@ -73,7 +73,7 @@ public class RGBLight extends SubsystemBase {
         setColor(LightColor.OFF);
     }
 
-   //Getter for current color
+    //Getter for current color
     public LightColor getCurrentColor() {
         return currentColor;
     }

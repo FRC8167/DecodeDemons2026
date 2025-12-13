@@ -11,6 +11,7 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.Commands.ShooterSmartSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
@@ -64,31 +65,36 @@ public class MainTeleOp extends CommandOpMode {
 
         //******OPERATOR CONTROLS*****
         operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-            .whileHeld(new ShooterSpinUpCommand(robot.shooter, 4800.0))
+            .whileHeld(new ShooterSmartSpinUpCommand(robot.shooter, robot.vision))
             .whenReleased(new ShooterSpinUpCommand(robot.shooter, 0.0));
 
 
         operator.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(new SequentialCommandGroup(
                         new InstantCommand(robot.intake::forward),
-                        new InstantCommand(()-> robot.feederF.feed(Feeder.FeederState.FORWARD)
-                        )))
-                .whenReleased(new SequentialCommandGroup(
-                        new InstantCommand(robot.intake::off),
-                        new InstantCommand(()-> robot.feederF.feed(Feeder.FeederState.STOP)
+                        new InstantCommand( robot.feederF::forwardTogal
                         )));
+
 
 
 
         operator.getGamepadButton(GamepadKeys.Button.B)
                 .whenPressed(new SequentialCommandGroup(
                         new InstantCommand(robot.intake::reverse),
-                        new InstantCommand(()-> robot.feederF.feed(Feeder.FeederState.REVERSE)
-                        )))
-                        .whenReleased(new SequentialCommandGroup(
-                                new InstantCommand(robot.intake::off),
-                                new InstantCommand(()-> robot.feederF.feed(Feeder.FeederState.STOP)
-                                )));
+                        new InstantCommand(robot.feederF::reverseTogal
+                        )));
+
+
+
+        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(new InstantCommand(()->robot.feederR.feed(Feeder.FeederState.FORWARD)))
+                .whenReleased(new InstantCommand(()->robot.feederR.feed(Feeder.FeederState.STOP)));
+
+
+
+        operator.getGamepadButton(GamepadKeys.Button.Y)
+                .whenPressed(new InstantCommand(()->robot.feederR.feed(Feeder.FeederState.REVERSE)))
+                .whenReleased(new InstantCommand(()->robot.feederR.feed(Feeder.FeederState.STOP)));
 
 
 

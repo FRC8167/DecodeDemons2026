@@ -6,10 +6,17 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+import com.seattlesolvers.solverslib.command.WaitCommand;
+import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.Commands.DetectArtifactCommand;
+import org.firstinspires.ftc.teamcode.Commands.ShooterSmartSpinUpCommand;
+import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
+import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
@@ -66,8 +73,41 @@ public class AutoBlueFar extends CommandOpMode {
         schedule(new DetectArtifactCommand(robot.rgbLight, robot.colorMatch, robot.shooter));
         schedule(new VisionCommand(robot.vision));
         schedule(
-                new SequentialCommandGroup()
-        );
+                new SequentialCommandGroup(
+
+                        new ShooterSmartSpinUpCommand(robot.shooter, robot.vision),
+                        new InstantCommand(()-> robot.feederF.feed(Feeder.FeederState.FORWARD)),
+                        new WaitCommand(1000),
+                        new InstantCommand(()-> robot.feederR.feed(Feeder.FeederState.FORWARD)),
+                        new WaitCommand(750),
+                        new InstantCommand(robot.intake::forward)
+                        ),
+                        new ParallelCommandGroup(
+//                                new ShooterSpinUpCommand(robot.shooter,0.0),
+                                new InstantCommand(robot.feederR::off),
+                                new InstantCommand(robot.feederF::off),
+                                new InstantCommand(robot.intake::off)
+                        ),
+                        new FollowPathCommand(robot.follower, path1, true),
+                        new ParallelCommandGroup(
+                                new InstantCommand(()-> robot.feederF.feed(Feeder.FeederState.FORWARD)),
+                                new InstantCommand(robot.intake::forward),
+                                new FollowPathCommand( robot.follower, path2, true)
+                        ),
+                        new ParallelCommandGroup(
+                                new InstantCommand(robot.feederR::off),
+                                new InstantCommand(robot.feederF::off),
+                                new InstantCommand(robot.intake::off)
+
+                        ),
+                        new FollowPathCommand(robot.follower, path3, true),
+                        new ShooterSmartSpinUpCommand(robot.shooter, robot.vision),
+                        new InstantCommand(()-> robot.feederF.feed(Feeder.FeederState.FORWARD)),
+                        new WaitCommand(1000),
+                        new InstantCommand(()-> robot.feederR.feed(Feeder.FeederState.FORWARD)),
+                        new WaitCommand(750),
+                        new InstantCommand(robot.intake::forward)
+                        );
     }
 
     @Override

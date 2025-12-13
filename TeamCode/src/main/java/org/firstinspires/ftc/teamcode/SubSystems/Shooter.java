@@ -94,7 +94,15 @@ public class Shooter extends SubsystemBase {
         }
 
         public void smartVelocity(double ATdistance) {
-            double targetRPM = distanceToRPM.get(ATdistance);
+            double targetRPM = 0.0;
+            if (ATdistance > 20 && ATdistance <=144){
+                targetRPM = distanceToRPM.get(ATdistance);
+
+            }
+            else
+            {
+                targetRPM = 3400;
+            }
             ticksPerSec = convertRPMToTicksPerSec(targetRPM);
             shooterPID.setSetPoint(ticksPerSec);
         }

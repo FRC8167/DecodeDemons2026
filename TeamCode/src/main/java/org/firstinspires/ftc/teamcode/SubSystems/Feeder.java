@@ -9,6 +9,11 @@ import org.firstinspires.ftc.teamcode.Robot;
 
 public class Feeder extends SubsystemBase {
 
+    private boolean isRunning;
+
+    private Double fSpeed = 0.6;
+    private Double rSpeed = 0.6;
+
     private CRServo servo;
 
     public enum FeederState{
@@ -50,4 +55,28 @@ public class Feeder extends SubsystemBase {
     public FeederState getState() {
         return state;
     }
+
+    public void off(){
+        servo.set(0.0);
+        isRunning = false;
+    }
+
+
+    public void forwardTogal() {
+        if (isRunning){
+            off();
+        } else{
+            servo.set(-fSpeed);
+            isRunning = true;}
+    }
+
+
+    public void reverseTogal(){
+        if (isRunning){
+            off();
+        }else{
+            servo.set(rSpeed);
+            isRunning = true;}
+    }
+
 }

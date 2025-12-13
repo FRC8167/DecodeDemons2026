@@ -157,7 +157,7 @@ public class Vision extends SubsystemBase {
                 return (detection.ftcPose.range);
             }
         }
-        return Double.NaN; //what is Dave?
+        return 0;
     }
 
 

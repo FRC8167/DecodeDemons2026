@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
+import com.pedropathing.control.FilteredPIDFCoefficients;
+import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
@@ -15,10 +17,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class Constants {
     //mass of 15 is a placeholder
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .forwardZeroPowerAcceleration(-26.129)
-            .lateralZeroPowerAcceleration(-58.025)
-
-            .mass(9);  //TODO weigh the robot
+            .forwardZeroPowerAcceleration(-35.198)
+            .lateralZeroPowerAcceleration(-61.011)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.4, 0, .03, 0.01))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.1, 0.0, 0.0, 0.01))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(.006, 0.0, .0006, 0.6, 0.01))
+            .centripetalScaling(.0005)
+            .mass(8.0);  //TODO weigh the robot
 
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
@@ -36,8 +41,8 @@ public class Constants {
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
-            .xVelocity(65.4)
-            .yVelocity(55.02)
+            .xVelocity(63.487)
+            .yVelocity(53.791)
             .rightFrontMotorName("RightFront")  //TODO check these names                                             c
             .rightRearMotorName("RightRear")
             .leftRearMotorName("LeftRear")

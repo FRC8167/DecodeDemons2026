@@ -1,32 +1,34 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.hardware.SensorColor;
 
 import org.firstinspires.ftc.teamcode.Cogintilities.TeamConstants;
 
-public class ColorMatch implements TeamConstants {
+public class ColorMatch extends SubsystemBase {
 
-    RevColorSensorV3 colorSensor;
+SensorColor sensorColor
+        ;
 
 
-    public ColorMatch(SensorColor colorSensor) {
-//        this.colorSensor = colorSensor;
+    public ColorMatch(SensorColor sensorColor) {
+        this.sensorColor = sensorColor;
     }
 
     //Get the raw RGB Values
     public int[] myRGB() {
-        int r = colorSensor.red();
-        int g = colorSensor.green();
-        int b = colorSensor.blue();
+        int r = sensorColor.red();
+        int g = sensorColor.green();
+        int b = sensorColor.blue();
         return new int[]{r, g, b};
     }
 
     //use library function to convert RGB to hue, saturation, and value
     public float[] getHSV() {
-        int r = colorSensor.red();
-        int g = colorSensor.green();
-        int b = colorSensor.blue();
+        int r = sensorColor.red();
+        int g = sensorColor.green();
+        int b = sensorColor.blue();
         float[] hsv = new float[3];
         android.graphics.Color.RGBToHSV(r, g, b, hsv);
         return hsv;
