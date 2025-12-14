@@ -8,22 +8,50 @@ import org.firstinspires.ftc.teamcode.Robot;
 
 public class Intake extends SubsystemBase{
 
-    private MotorEx motor;
+    private MotorEx intakeMotor;
 
     private boolean isRunning;
 
     private Double fSpeed = 0.9;
     private Double rSpeed = -0.7;
+    public MotorState motorstate = MotorState.STOP;
 
 
     public Intake (MotorEx intakeMotor){
-        motor = intakeMotor;
+        this.intakeMotor = intakeMotor;
         off();
     }
 
+    public enum MotorState{
+        REVERSE,
+        STOP,
+        FORWARD
+};
+
+   public void setMotorState(MotorState motorState)  {
+       this.motorstate = motorState;
+       setIntakeState();
+   }
+
+   public void setIntakeState()  {
+       switch(motorstate) {
+           case FORWARD:
+               intakeMotor.set(fSpeed);
+               break;
+           case REVERSE:
+               intakeMotor.set(rSpeed);
+               break;
+           case STOP:
+               default:
+                   intakeMotor.set(0.0);
+                   break;
+
+       }
+   }
+
 
     public void off(){
-        motor.set(0.0);
+        intakeMotor.set(0.0);
         isRunning = false;
     }
 
@@ -32,7 +60,7 @@ public class Intake extends SubsystemBase{
         if (isRunning){
             off();
         } else{
-            motor.set(fSpeed);
+            intakeMotor.set(fSpeed);
             isRunning = true;}
     }
 
@@ -41,8 +69,18 @@ public class Intake extends SubsystemBase{
         if (isRunning){
             off();
         }else{
-        motor.set(rSpeed);
+        intakeMotor.set(rSpeed);
         isRunning = true;}
+    }
+
+    public void intakeOn() {
+        intakeMotor.set(fSpeed);
+        isRunning = true;
+    }
+
+    public void intakeReverse() {
+        intakeMotor.set(rSpeed);
+        isRunning = true;
     }
 
 

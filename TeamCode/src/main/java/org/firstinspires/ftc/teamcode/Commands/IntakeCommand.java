@@ -3,16 +3,17 @@ package org.firstinspires.ftc.teamcode.Commands;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
-public class SetIntakeCommand extends CommandBase {
+public class IntakeCommand extends CommandBase {
     private final Intake intake;
+    private final Intake.MotorState motorState;
     private final ElapsedTime timer = new ElapsedTime();
     private final double duration;
 
-    public SetIntakeCommand(Intake intake, double duration){
+    public IntakeCommand(Intake intake, Intake.MotorState motorState, double duration){
         this.intake = intake;
+        this.motorState = motorState;
         this.duration = duration;
         addRequirements(intake);
     }
@@ -21,12 +22,12 @@ public class SetIntakeCommand extends CommandBase {
     @Override
     public void initialize() {
         timer.reset();
-        intake.forward();
+        intake.setMotorState(motorState);
     }
 
     @Override
     public void execute() {
-        intake.forward();
+        intake.setIntakeState();
     }
 
     @Override
