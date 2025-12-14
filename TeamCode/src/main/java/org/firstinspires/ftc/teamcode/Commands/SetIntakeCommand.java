@@ -4,34 +4,29 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
-//This is a command for controlling the feeder subsystem
-//A command is a reusable action the robot can perform such as run feeder FWD
+import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
-public class FeederCommand extends CommandBase {
-
-
-    private final Feeder feeder;
-    private final Feeder.FeederState feederState;
+public class SetIntakeCommand extends CommandBase {
+    private final Intake intake;
     private final ElapsedTime timer = new ElapsedTime();
     private final double duration;
 
-    public FeederCommand(Feeder.FeederState feederState, Feeder feeder, double duration){
-        this.feeder = feeder;
-        this.feederState = feederState;
+    public SetIntakeCommand(Intake intake, double duration){
+        this.intake = intake;
         this.duration = duration;
-        addRequirements(feeder);
+        addRequirements(intake);
     }
 
 
     @Override
     public void initialize() {
         timer.reset();
-        feeder.feed(feederState);
+        intake.forward();
     }
 
     @Override
     public void execute() {
-        feeder.feed(feederState);
+        intake.forward();
     }
 
     @Override
@@ -42,7 +37,8 @@ public class FeederCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        feeder.feed(Feeder.FeederState.STOP);
+        intake.off();
     }
 
 }
+
