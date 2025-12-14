@@ -9,34 +9,40 @@ import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 
 public class FeederCommand extends CommandBase {
 
-    //TODO:  Reference the subsystem this command controls
-    //private final Subsystem subsystem
 
-    //TODO:  Create a constructor with parameters
-    //TODO:  include addRequirements(subsystem) which prevents commands from controlling more than one system at once
+    private final Feeder feeder;
+    private final Feeder.FeederState feederState;
+    private final ElapsedTime timer = new ElapsedTime();
+    private final double duration;
+
+    public FeederCommand(Feeder.FeederState feederState, Feeder feeder, double duration){
+        this.feeder = feeder;
+        this.feederState = feederState;
+        this.duration = duration;
+        addRequirements(feeder);
+    }
+
+
     @Override
     public void initialize() {
-        //Runs ONCE at the start of the command
-
+        timer.reset();
+        feeder.feed(feederState);
     }
 
     @Override
     public void execute() {
-
+        feeder.feed(feederState);
     }
-    //Runs repeatedly while the command is active
-
 
     @Override
     public boolean isFinished() {
-        return true;
+        return duration > 0 && timer.milliseconds() > duration;
     }
-    //Determines wehn teh command ends
-    //You can use a timer
+
 
     @Override
     public void end(boolean interrupted) {
-
+        feeder.feed(Feeder.FeederState.STOP);
     }
-    //Runs when the command finishes or is interrupted
+    
 }
