@@ -32,11 +32,12 @@ public class Shooter extends SubsystemBase {
     public static final InterpLUT distanceToRPM;
         static{
             distanceToRPM = new InterpLUT();
-            distanceToRPM.add(20.0, 1743.0);
-            distanceToRPM.add(66.7, 3000.0);
-            distanceToRPM.add(87.0, 3200.0);
-            distanceToRPM.add(116.0, 4000.0);
-            distanceToRPM.add(144.0, 4800.0);
+            distanceToRPM.add(57.0, 3200.0);
+            distanceToRPM.add(71.5, 3500);
+            distanceToRPM.add(90.0, 3650.0);
+            distanceToRPM.add(96.0, 3700.0);
+            distanceToRPM.add(115.0, 3900.0);
+            distanceToRPM.add(138.0, 4100.0);
             //in and RPM
             distanceToRPM.createLUT();
         }
@@ -95,13 +96,13 @@ public class Shooter extends SubsystemBase {
 
         public void smartVelocity(double ATdistance) {
             double targetRPM = 0.0;
-            if (ATdistance > 20 && ATdistance <=144){
+            if (ATdistance > 57 && ATdistance <=138){
                 targetRPM = distanceToRPM.get(ATdistance);
 
             }
             else
             {
-                targetRPM = 3400;
+                targetRPM = 4200;
             }
             ticksPerSec = convertRPMToTicksPerSec(targetRPM);
             shooterPID.setSetPoint(ticksPerSec);

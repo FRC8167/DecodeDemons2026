@@ -12,7 +12,7 @@ public class Intake extends SubsystemBase{
 
     private boolean isRunning;
 
-    private Double fSpeed = 0.9;
+    private Double fSpeed = 1.0;
     private Double rSpeed = -0.7;
     public MotorState motorstate = MotorState.STOP;
 

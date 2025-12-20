@@ -17,13 +17,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class Constants {
     //mass of 15 is a placeholder
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .forwardZeroPowerAcceleration(-35.198)
-            .lateralZeroPowerAcceleration(-61.011)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.4, 0, .03, 0.01))
-            .headingPIDFCoefficients(new PIDFCoefficients(1.1, 0.0, 0.0, 0.01))
+            .forwardZeroPowerAcceleration(-35.97131831366841)
+            .lateralZeroPowerAcceleration(-58.03295303491395 )
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, .03, 0.025))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.7, 0.0, 0.002, 0.025))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(.006, 0.0, .0006, 0.6, 0.01))
             .centripetalScaling(.0005)
-            .mass(8.0);  //TODO weigh the robot
+            .mass(8.0);
 
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
@@ -41,8 +41,8 @@ public class Constants {
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
-            .xVelocity(63.487)
-            .yVelocity(53.791)
+            .xVelocity(65.13840370478593)
+            .yVelocity(56.13486895223302)
             .rightFrontMotorName("RightFront")  //TODO check these names                                             c
             .rightRearMotorName("RightRear")
             .leftRearMotorName("LeftRear")

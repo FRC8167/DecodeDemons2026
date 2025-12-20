@@ -47,10 +47,8 @@ SensorColor sensorColor
 
             if (hue < 30 || hue > 330) {
                 detectedColor = "RED";
-            } else if (hue > 90 && hue < 150) {
+            } else if (hue > 70 && hue < 160  && hue!=120) {
                 detectedColor = "GREEN";
-            } else if (hue > 200 && hue < 270) {
-                detectedColor = "BLUE";
             } else if (hue > 220 && hue < 300)
                 detectedColor = "PURPLE";
 

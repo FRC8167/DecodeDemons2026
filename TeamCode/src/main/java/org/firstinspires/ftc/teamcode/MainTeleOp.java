@@ -7,10 +7,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
+
+import org.firstinspires.ftc.teamcode.Commands.DetectArtifactCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.Commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSmartSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
@@ -57,6 +61,7 @@ public class MainTeleOp extends CommandOpMode {
         //only schedule perpetually running commands
         schedule(new DriveCommand(robot.mecanumDrive, gamepad1));
         schedule(new VisionCommand(robot.vision));
+        schedule(new DetectArtifactCommand(robot.rgbLight, robot.colorMatch)); //, robot.shooter));
 
         driver   = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
@@ -69,13 +74,23 @@ public class MainTeleOp extends CommandOpMode {
             .whenReleased(new ShooterSpinUpCommand(robot.shooter, 0.0));
 
 
+        operator.getGamepadButton(GamepadKeys.Button.BACK)
+            .whileHeld(new ShooterSpinUpCommand(robot.shooter, -1000.0))
+            .whenReleased(new ShooterSpinUpCommand(robot.shooter, 0.0));
+
+
         operator.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed(new SequentialCommandGroup(
+                .whenPressed(
+                        new ParallelCommandGroup(
                         new InstantCommand(robot.intake::forward),
-                        new InstantCommand( robot.feederF::forwardTogal
-                        )));
+                        new InstantCommand(robot.feederF::forwardTogal)
+                        )
 
+                );
 
+//        operator.getGamepadButton(GamepadKeys.Button.X)
+//                .whenPressed(new InstantCommand( robot.feederF::forwardTogal)
+//                        );
 
 
         operator.getGamepadButton(GamepadKeys.Button.B)
@@ -128,6 +143,7 @@ public class MainTeleOp extends CommandOpMode {
         AprilTagDetection tag = robot.vision.getFirstTargetTag();
 
 
+
         if (tag != null) {
             telemetry.addLine("Target Tag Detected!");
             telemetry.addData("ID", tag.id);
@@ -146,11 +162,6 @@ public class MainTeleOp extends CommandOpMode {
 //           robot.feederR.feed(Feeder.FeederState.STOP);
 //           robot.feederF.feed(Feeder.FeederState.STOP);
 //       }
-
-
-
-
-
 
 
 
