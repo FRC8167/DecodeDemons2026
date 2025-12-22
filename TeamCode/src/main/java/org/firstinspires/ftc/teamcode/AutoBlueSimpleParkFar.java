@@ -57,6 +57,7 @@ public class AutoBlueSimpleParkFar extends CommandOpMode {
 
     public void initialize() {
         Robot.OP_MODE_TYPE = Robot.OpModeType.AUTO;
+        robot.setAlliance(Robot.Alliance.BLUE);
 
         timer = new ElapsedTime();
         timer.reset();

@@ -137,7 +137,7 @@ public class MainTeleOp extends CommandOpMode {
         driver.getGamepadButton(GamepadKeys.Button.B).
                 whenPressed(
                         new SequentialCommandGroup(
-                                new ShooterSpinUpCommand(robot.shooter, 3850),  
+                                new ShooterSpinUpCommand(robot.shooter, 3850),
                                 new DriveToPoseCommand(shootFarPose, driver),
                                 new ParallelCommandGroup(
                                         new InstantCommand(robot.gate::open, robot.gate),

@@ -41,6 +41,14 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         TELEOP
     }
 
+    public enum Alliance {
+        RED,
+        BLUE,
+        UNSPECIFIED
+    }
+
+    private Alliance alliance = Alliance.UNSPECIFIED;
+
     public Telemetry telemetry;
 
 
@@ -139,6 +147,14 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
     public void initHasMovement() {
         //TODO what goes here??
+    }
+
+    public void setAlliance(Alliance ally) {
+        alliance = ally;
+    }
+
+    public Alliance getAlliance() {
+        return alliance;
     }
 
 

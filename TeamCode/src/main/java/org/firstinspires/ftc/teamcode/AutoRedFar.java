@@ -87,6 +87,7 @@ public class AutoRedFar extends CommandOpMode {
 
     public void initialize() {
         Robot.OP_MODE_TYPE = Robot.OpModeType.AUTO;
+        robot.setAlliance(Robot.Alliance.RED);
 
         timer = new ElapsedTime();
         timer.reset();
