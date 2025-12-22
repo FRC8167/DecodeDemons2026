@@ -21,7 +21,7 @@ public class DriveToPoseCommand extends CommandBase {
         robot = Robot.getInstance();
         this.targetPose = targetPose;
         this.driver = driver;
-        addRequirements(robot.mecanumDrive);
+//        addRequirements(robot.mecanumDrive);
 
     }
 
@@ -30,12 +30,24 @@ public class DriveToPoseCommand extends CommandBase {
 
         Pose currentPose = robot.follower.getPose();
 
-         PathChain pathToShoot = robot.follower.pathBuilder()
+        PathChain pathToShoot = robot.follower.pathBuilder()
                 .addPath(new BezierLine(currentPose, targetPose))
-                .setLinearHeadingInterpolation(currentPose.getHeading(), targetPose.getHeading())
+                .setLinearHeadingInterpolation(
+                        currentPose.getHeading(),
+                        targetPose.getHeading()
+                )
                 .build();
 
         robot.follower.followPath(pathToShoot);
+
+//        Pose currentPose = robot.follower.getPose();
+//
+//         PathChain pathToShoot = robot.follower.pathBuilder()
+//                .addPath(new BezierLine(currentPose, targetPose))
+//                .setLinearHeadingInterpolation(currentPose.getHeading(), targetPose.getHeading())
+//                .build();
+//
+//        robot.follower.followPath(pathToShoot);
 
     }
 
@@ -47,21 +59,31 @@ public class DriveToPoseCommand extends CommandBase {
     @Override
 
     public boolean isFinished() {
-            Pose current = robot.follower.getPose();
-            double distanceXError = Math.abs(current.getX() - targetPose.getX());
-            double distanceYError = Math.abs(current.getY() - targetPose.getY());
-            double headingError = Math.abs(current.getHeading() - targetPose.getHeading());
 
-            // Tolerances: 1 inch, 3 degrees
-            // Driver override: joystick magnitude > 0.1
-        boolean driverOverride = driver.getLeftY() > 0.1;
+        boolean driverOverride =
+                Math.abs(driver.getLeftY()) > 0.1 ||
+                        Math.abs(driver.getLeftX()) > 0.1 ||
+                        Math.abs(driver.getRightX()) > 0.1;
 
-        return (distanceXError < 2.0 && distanceYError < 2.0 && headingError < Math.toRadians(3))
-                || driverOverride;        }
+        return !robot.follower.isBusy() || driverOverride;
+    }
+//            Pose current = robot.follower.getPose();
+//            double distanceXError = Math.abs(current.getX() - targetPose.getX());
+//            double distanceYError = Math.abs(current.getY() - targetPose.getY());
+//            double headingError = Math.abs(current.getHeading() - targetPose.getHeading());
+//
+//            // Tolerances: 1 inch, 3 degrees
+//            // Driver override: joystick magnitude > 0.1
+//        boolean driverOverride = Math.abs(driver.getLeftY()) > 0.1  ||
+//                Math.abs(driver.getLeftX()) > 0.1  ||
+//                Math.abs(driver.getRightX()) > 0.1;
+//
+//        return (distanceXError < 2.0 && distanceYError < 2.0 && headingError < Math.toRadians(3))
+//                || driverOverride;        }
 
     @Override
     public void end(boolean interrupted) {
-        robot.follower.resumePathFollowing();
+        robot.follower.breakFollowing();
     }
 
 

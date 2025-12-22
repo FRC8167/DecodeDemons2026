@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Commands.DetectArtifactCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.ColorMatch;
 import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
+import org.firstinspires.ftc.teamcode.SubSystems.Gate;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.RGBLight;
@@ -72,11 +73,14 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
     public SensorColor colorSensor;
     public Vision vision;
     public Feeder feederF, feederR;
+    public Gate gate;
     public RGBLight rgbLight;
     public ColorMatch colorMatch;
 
 
     public void init(HardwareMap hardwareMap) throws InterruptedException {
+
+
         // Hardware
         driveMotorRF = new MotorEx(hardwareMap, "RightFront").setCachingTolerance(0.01);
         driveMotorLF = new MotorEx(hardwareMap, "LeftFront").setCachingTolerance(0.01);
@@ -90,6 +94,8 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
         CRServo feederServoF = new CRServo(hardwareMap, "feederServoF");
         CRServo feederServoR = new CRServo(hardwareMap, "feederServoR");
+
+        ServoEx gateServo = new ServoEx(hardwareMap, "gateServo");
 
         ServoEx rgbServo = new ServoEx(hardwareMap, "rgbServo");
 
@@ -114,6 +120,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         vision  = new Vision(webCam1);
         rgbLight = new RGBLight(rgbServo);
         colorMatch = new ColorMatch(sensorColor);
+        gate = new Gate(gateServo);
 
 
 
@@ -123,7 +130,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         rgbLight.setDefaultCommand(detectArtifactCommand);
 
         //Register Subsystems
-        register(mecanumDrive, intake, shooter, feederF, feederR, vision, rgbLight, colorMatch);
+        register(mecanumDrive, intake, shooter, feederF, feederR, vision, rgbLight, colorMatch, gate);
 
         if (OP_MODE_TYPE.equals(OpModeType.AUTO)) {
             initHasMovement();

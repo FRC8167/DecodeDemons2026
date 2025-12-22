@@ -9,16 +9,20 @@ import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.Commands.DetectArtifactCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
+import org.firstinspires.ftc.teamcode.Commands.FeederCommand;
 import org.firstinspires.ftc.teamcode.Commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSmartSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
+import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
@@ -35,11 +39,12 @@ public class MainTeleOp extends CommandOpMode {
 
     private final Pose startPose = new Pose(24, 24, Math.toRadians(0)); // Test
     private Pose autoEndPose = new Pose(0, 0, 0);
-    private final Pose shootingPose = new Pose(56, 8, Math.toRadians(-45));
+    private final Pose shootFarPose = new Pose(56, 12, Math.toRadians(-66));
 
 
     @Override
     public void initialize() {
+
         // Must have for all opModes
         Robot.OP_MODE_TYPE = Robot.OpModeType.TELEOP;
         // Resets the command scheduler
@@ -51,6 +56,8 @@ public class MainTeleOp extends CommandOpMode {
             throw new RuntimeException(e);
         }
 
+        //added 12-22
+        robot.mecanumDrive.setDefaultCommand(new DriveCommand(robot.mecanumDrive, gamepad1));
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
         //end pose held in robot
@@ -113,22 +120,43 @@ public class MainTeleOp extends CommandOpMode {
 
 
 
-//        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-
-
-//        operator.getGamepadButton(GamepadKeys.Button.Y)
-
-
         /* ******************************************************************************* */
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new InstantCommand(robot.mecanumDrive::enableSnailDrive))
                 .whenReleased(new InstantCommand(robot.mecanumDrive::disableSnailDrive));
 
 
-//        driver.getGamepadButton(GamepadKeys.Button.A).aline to target
+        driver.getGamepadButton(GamepadKeys.Button.X).
+                whenPressed(new InstantCommand(robot.gate::open, robot.gate));
+
+        driver.getGamepadButton(GamepadKeys.Button.Y).
+                whenPressed(new InstantCommand(robot.gate::close, robot.gate));
 
 
-//        driver.getGamepadButton(GamepadKeys.Button.B).shoot near
+
+        driver.getGamepadButton(GamepadKeys.Button.B).
+                whenPressed(
+                        new SequentialCommandGroup(
+                                new ShooterSpinUpCommand(robot.shooter, 3850),  
+                                new DriveToPoseCommand(shootFarPose, driver),
+                                new ParallelCommandGroup(
+                                        new InstantCommand(robot.gate::open, robot.gate),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000)
+                                ),
+                                new WaitCommand(250),
+                                new InstantCommand(robot.gate::close, robot.gate),
+                                new ShooterSpinUpCommand(robot.shooter, 0)
+                        )
+        );
+
+
+
+
+
+
+
 
 
 //        driver.getGamepadButton(GamepadKeys.Button.Y). shoot far
