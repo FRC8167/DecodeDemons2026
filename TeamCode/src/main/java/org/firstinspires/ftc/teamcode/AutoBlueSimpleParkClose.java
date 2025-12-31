@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.Commands.DetectArtifactCommand;
@@ -75,29 +76,36 @@ public class AutoBlueSimpleParkClose extends CommandOpMode {
                         new DetectArtifactCommand(robot.rgbLight, robot.colorMatch), // robot.shooter),
                         new VisionCommand(robot.vision),
 
-                        new SequentialCommandGroup(
-                                new ParallelCommandGroup(
-                                        new FollowPathCommand(robot.follower, path1, true),
-                                        new ShooterSpinUpCommand(robot.shooter, 3400)
-                                ),
-
-                                new ParallelCommandGroup(
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 4000),
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 4000),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  4000)
-                                ),
-                                new ParallelCommandGroup(
-                                        new FollowPathCommand(robot.follower, shootToParkPose, true),
-                                        new ShooterSpinUpCommand(robot.shooter,0.0),
-                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 250),
-                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.STOP,250)
+                        //move to launch zone
+                        new ParallelCommandGroup(
+                                new FollowPathCommand(robot.follower, path1, true),
+                                new ShooterSpinUpCommand(robot.shooter, 3400)
+                        ),
+                        //shoot first artifact
+                        new ParallelCommandGroup(
+                                new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
+                        ),
+                        new WaitCommand(250),
+                        //shoot second artifact
+                        new ParallelCommandGroup(
+                                new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000),
+                                new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  1000)
+                        ),
+                        //park and power down systems
+                        new ParallelCommandGroup(
+                                new FollowPathCommand(robot.follower, shootToParkPose, true),
+                                new ShooterSpinUpCommand(robot.shooter,0.0),
+                                new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 100),
+                                new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
+                                new IntakeCommand(robot.intake, Intake.MotorState.STOP,100)
                                 )
 
                         )
 
 
-        )
+
         );
 
     }

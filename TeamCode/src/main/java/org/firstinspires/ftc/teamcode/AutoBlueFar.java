@@ -14,11 +14,13 @@ import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.Commands.DetectArtifactCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeederCommand;
+import org.firstinspires.ftc.teamcode.Commands.GateCommand;
 import org.firstinspires.ftc.teamcode.Commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSmartSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
+import org.firstinspires.ftc.teamcode.SubSystems.Gate;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
@@ -115,19 +117,20 @@ public class AutoBlueFar extends CommandOpMode {
                                     ),
                             //shoot first ball
                             new ParallelCommandGroup(
-                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
-                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000)
+                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
                                 ),
                             new WaitCommand(250),
                             //shoot second ball
                             new ParallelCommandGroup(
-                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
-                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
-                                    new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000)
+                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000),
+                                    new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  1000)
                             ),
                             //move to first spike while shutting off intake, feeders, and shooter
                             new ParallelCommandGroup(
                                     new FollowPathCommand(robot.follower, shootToGPPSpikePath, true),
+                                    new GateCommand(robot.gate, Gate.GateState.OPEN),
                                     new ShooterSpinUpCommand(robot.shooter,0.0),
                                     new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 250),
                                     new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
@@ -139,28 +142,37 @@ public class AutoBlueFar extends CommandOpMode {
                                     new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  3000),
                                     new FollowPathCommand( robot.follower, eatGPPPath, true)
                             ),
-                            //move to shoot
+
+                            new GateCommand(robot.gate, Gate.GateState.CLOSED),
+
                             new ParallelCommandGroup(
                                     new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
                                     new IntakeCommand(robot.intake, Intake.MotorState.STOP,  250),
                                     new FollowPathCommand(robot.follower, endGPPToShootPath, true)
                             ),
                             //get ready to shoot
-                            new ShooterSpinUpCommand(robot.shooter, 3850),  //TODO:  Set this
+                            new ShooterSpinUpCommand(robot.shooter, 3850),
     //                      //shoot both balls and fix this later
+                            new ParallelCommandGroup(
+                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
+                            ),
+                            new WaitCommand(250),
+
                             new ParallelCommandGroup(
                                     new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
                                     new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
-                                    new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000)
-                            ),
+                                    new IntakeCommand(robot.intake, Intake.MotorState.FORWARD, 2000)
+                            )   ,
 
                             //move to spike2 and shut off systems
                             new ParallelCommandGroup(
                                     new FollowPathCommand(robot.follower, shootToPGPSpikePath, true),
                                     new ShooterSpinUpCommand(robot.shooter,0.0),
-                                    new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 250),
-                                    new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
-                                    new IntakeCommand(robot.intake, Intake.MotorState.STOP,250)
+                                    new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 100),
+                                    new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
+                                    new IntakeCommand(robot.intake, Intake.MotorState.STOP,100),
+                                    new GateCommand(robot.gate, Gate.GateState.OPEN)
                             ),
 
                             //gobble up spike2 balls
@@ -171,49 +183,38 @@ public class AutoBlueFar extends CommandOpMode {
                                 ),
                                 //prepare and move to shoot position
                                 new ParallelCommandGroup(
+                                        new GateCommand(robot.gate, Gate.GateState.CLOSED),
                                         new FollowPathCommand(robot.follower, endPGPToShootPath, true),
                                         new ShooterSpinUpCommand(robot.shooter,3850),
-                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 250),
-                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.STOP,250)
+                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 100),
+                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.STOP,100)
                                 ),
                                 //shoot and fix this later
                                 new ParallelCommandGroup(
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
+                                ),
+                                new WaitCommand(250),
+                                //shoot second ball
+                                new ParallelCommandGroup(
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,2000)
+                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD, 2000)
                                 ),
                                 //park outside of launch zone and power down subsystems
                                 new ParallelCommandGroup(
+                                    new GateCommand(robot.gate, Gate.GateState.OPEN),
                                     new FollowPathCommand(robot.follower, shootToGPPSpikePath, true),
                                     new ShooterSpinUpCommand(robot.shooter,0.0),
-                                    new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 250),
-                                    new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
-                                    new IntakeCommand(robot.intake, Intake.MotorState.STOP,250)
+                                    new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 100),
+                                    new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
+                                    new IntakeCommand(robot.intake, Intake.MotorState.STOP,100)
                                 )
 
                         )
                 )
         );
-
-                                //park somewhere
-//                                new ParallelCommandGroup(
-//
-//                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
-//                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
-//                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000),
-//                                        new FollowPathCommand( robot.follower, path6, true)
-//                                ),
-//
-//
-//                                new ParallelCommandGroup(
-//                                        new ShooterSpinUpCommand(robot.shooter,4200),
-//
-//                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 3000),
-//                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 3000),
-//                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  3000)
-
-
     }
 
 

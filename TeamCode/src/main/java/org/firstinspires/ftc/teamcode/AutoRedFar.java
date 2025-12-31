@@ -47,9 +47,6 @@ public class AutoRedFar extends CommandOpMode {
     public void buildPaths() {
         robot.follower.setStartingPose(startPose);
 
-
-
-
         rotateToShootPath = robot.follower.pathBuilder()
                 .addPath(new BezierLine(startPose, rotatedPose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), rotatedPose.getHeading())
@@ -137,38 +134,33 @@ public class AutoRedFar extends CommandOpMode {
                                         new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
                                         new IntakeCommand(robot.intake, Intake.MotorState.STOP,100)
                                 ),
-                                //gobble up the balls on spike1
+                                //gobble up the artifacts on spike1
                                 new ParallelCommandGroup(
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 3000),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  3000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  1000),
                                         new FollowPathCommand( robot.follower, eatGPPPath, true)
 
                                 ),
                                 new GateCommand(robot.gate, Gate.GateState.CLOSED),
-//                                new ShooterSpinUpCommand(robot.shooter, -1000),
-//                                new WaitCommand(250),
-//                                new ShooterSpinUpCommand(robot.shooter, 0.0),
-                                //move to shoot
+//
                                 new ParallelCommandGroup(
-                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.STOP,  250),
+                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.STOP,  100),
                                         new FollowPathCommand(robot.follower, endGPPToShootPath, true)
-
-
                                 ),
                                 //get ready to shoot
-                                new ShooterSpinUpCommand(robot.shooter, 3850),  //TODO:  Set this
-                                //                      //shoot both balls and fix this later
+                                new ShooterSpinUpCommand(robot.shooter, 3850),
+                                //shoot first artifact
                                 new ParallelCommandGroup(
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
                                 ),
                                 new WaitCommand(250),
-                                //shoot second ball
+                                //shoot second artifact
                                 new ParallelCommandGroup(
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000)
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  1000)
                                 ),
 
 
@@ -180,21 +172,16 @@ public class AutoRedFar extends CommandOpMode {
                                         new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
                                         new IntakeCommand(robot.intake, Intake.MotorState.STOP,100),
                                         new GateCommand(robot.gate, Gate.GateState.OPEN)
-
                                         ),
 
-                                //gobble up spike2 balls
+                                //gobble up spike2 artifacts
                                 new ParallelCommandGroup(
                                         new FollowPathCommand( robot.follower, eatPGPPath, true),
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 3000),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  3000)
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000)
 
                                 ),
-//                                new ShooterSpinUpCommand(robot.shooter, -1000),
-//                                new WaitCommand(250),
-//                                new ShooterSpinUpCommand(robot.shooter, 0.0),
-
-
+//
                                 //prepare and move to shoot position
                                 new ParallelCommandGroup(
                                         new GateCommand(robot.gate, Gate.GateState.CLOSED),
@@ -205,13 +192,13 @@ public class AutoRedFar extends CommandOpMode {
                                         new IntakeCommand(robot.intake, Intake.MotorState.STOP,100)
                                 ),
 
-                                //shoot and fix this later
+                                //shoot first artifact
                                 new ParallelCommandGroup(
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
                                 ),
                                 new WaitCommand(250),
-                                //shoot second ball
+                                //shoot second artifact
                                 new ParallelCommandGroup(
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
@@ -231,23 +218,6 @@ public class AutoRedFar extends CommandOpMode {
                         )
                 )
         );
-
-        //park somewhere
-//                                new ParallelCommandGroup(
-//
-//                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
-//                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
-//                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000),
-//                                        new FollowPathCommand( robot.follower, path6, true)
-//                                ),
-//
-//
-//                                new ParallelCommandGroup(
-//                                        new ShooterSpinUpCommand(robot.shooter,4200),
-//
-//                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 3000),
-//                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 3000),
-//                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  3000)
 
 
     }

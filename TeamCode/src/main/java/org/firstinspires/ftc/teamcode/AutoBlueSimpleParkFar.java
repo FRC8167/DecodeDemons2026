@@ -86,15 +86,15 @@ public class AutoBlueSimpleParkFar extends CommandOpMode {
                                 ),
                                 //shoot first ball
                                 new ParallelCommandGroup(
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000)
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
                                 ),
                                 new WaitCommand(250),
                                 //shoot second ball
                                 new ParallelCommandGroup(
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000)
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  1000)
                                 ),
                                 //move to park
                                 new ParallelCommandGroup(

@@ -8,15 +8,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.Commands.DetectArtifactCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeederCommand;
+import org.firstinspires.ftc.teamcode.Commands.GateCommand;
 import org.firstinspires.ftc.teamcode.Commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSmartSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
+import org.firstinspires.ftc.teamcode.SubSystems.Gate;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.SubSystems.Vision;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -102,77 +105,107 @@ public class AutoBlueClose extends CommandOpMode {
                         new VisionCommand(robot.vision),
 
                         new SequentialCommandGroup(
+                                //move to launch zone
                                 new ParallelCommandGroup(
                                         new FollowPathCommand(robot.follower, path1, true),
                                         new ShooterSpinUpCommand(robot.shooter, 3400)
                                 ),
-
+                                //shoot first artifact
                                 new ParallelCommandGroup(
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 4000),
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 4000),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  4000)
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
                                 ),
+                                new WaitCommand(250),
+                                //shoot second artifact
+                                new ParallelCommandGroup(
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  1000)
+                                ),
+                                //move to nearest spike while shutting off intake, feeders, and shooter
                                 new ParallelCommandGroup(
                                         new FollowPathCommand(robot.follower, path2, true),
+                                        new GateCommand(robot.gate, Gate.GateState.OPEN),
                                         new ShooterSpinUpCommand(robot.shooter,0.0),
-                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 250),
-                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.STOP,250)
+                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 100),
+                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.STOP,100)
                                 ),
+                                //gobble up artifacts on nearest spike
                                 new ParallelCommandGroup(
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  1000),
                                         new FollowPathCommand( robot.follower, path3, true)
                                 ),
+                                new GateCommand(robot.gate, Gate.GateState.CLOSED),
+
                                 new ParallelCommandGroup(
                                         new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
                                         new IntakeCommand(robot.intake, Intake.MotorState.STOP,  250),
-                                        new FollowPathCommand(robot.follower, path4, true),
-                                        new ShooterSpinUpCommand(robot.shooter, 3400) //TODO:  Set this
+                                        new FollowPathCommand(robot.follower, path4, true)
 
                                 ),
+                                //get ready to shoot
+                                new ShooterSpinUpCommand(robot.shooter, 3400),
+                                //shoot first artifact
 
                                 new ParallelCommandGroup(
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 3000),
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 3000),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  3000)
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
                                 ),
-//                                new ParallelCommandGroup(
-//                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
-//                                        new IntakeCommand(robot.intake, Intake.MotorState.STOP,  250),
-//                                        new FollowPathCommand(robot.follower, path3, true)
-//                                ),
-//                                new ShooterSpinUpCommand(robot.shooter, 4200),  //TODO:  Set this
-//                                //                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 750),
-//                                new ParallelCommandGroup(
-//                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2500),
-//                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2500),
-//                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2500)
-//                                ),
-                                new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
-                                new IntakeCommand(robot.intake, Intake.MotorState.STOP,  250),
-                                new ShooterSpinUpCommand(robot.shooter, 0.0),
-                                new FollowPathCommand(robot.follower, path6, true),
+                                new WaitCommand(250),
+                                //shoot second artifact
                                 new ParallelCommandGroup(
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  1000)
+                                ),
+                                //move to middle spike and shut off systems
+                                new ParallelCommandGroup(
+                                        new FollowPathCommand(robot.follower, path6, true),
+                                        new ShooterSpinUpCommand(robot.shooter, 0.0),
+                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 100),
+                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.STOP,  100),
+                                        new GateCommand(robot.gate, Gate.GateState.OPEN)
+                                ),
+                                //gobble up middle spike artifacts
+                                new ParallelCommandGroup(
+                                        new FollowPathCommand( robot.follower, path7, true),
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000),
-                                        new FollowPathCommand( robot.follower, path7, true)
+                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000)
                                 ),
-
+                                //prepare and move to shoot position
                                 new ParallelCommandGroup(
-                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.STOP,  250),
+                                        new GateCommand(robot.gate, Gate.GateState.CLOSED),
                                         new FollowPathCommand(robot.follower, path8 , true),
-                                        new ShooterSpinUpCommand(robot.shooter, 3400) //TODO:  Set this
+                                        new ShooterSpinUpCommand(robot.shooter, 3400),
+                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 100),
+                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.STOP,  100)
 
                                 ),
 
                                 new ParallelCommandGroup(
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 3000),
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 3000),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  3000)
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
                                 ),
-                                new FollowPathCommand(robot.follower, path5, true)
+                                new WaitCommand(250),
+                                //shoot second artifact
+                                new ParallelCommandGroup(
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000)
+                                ),
+                                //park outside  of launch zone and power down systems
+                                new ParallelCommandGroup(
+                                        new GateCommand(robot.gate, Gate.GateState.OPEN),
+                                        new FollowPathCommand(robot.follower, path5, true),
+                                        new ShooterSpinUpCommand(robot.shooter,0.0),
+                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 100),
+                                        new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.STOP, 100)
+                                )
                         )
                 )
         );
