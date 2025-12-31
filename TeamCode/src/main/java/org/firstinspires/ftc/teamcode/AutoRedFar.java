@@ -138,7 +138,7 @@ public class AutoRedFar extends CommandOpMode {
                                 new ParallelCommandGroup(
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000),
                                         new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  1000),
-                                        new FollowPathCommand( robot.follower, eatGPPPath, true)
+                                        new FollowPathCommand( robot.follower, eatGPPPath, true).setGlobalMaxPower(0.5)
 
                                 ),
                                 new GateCommand(robot.gate, Gate.GateState.CLOSED),
@@ -176,7 +176,7 @@ public class AutoRedFar extends CommandOpMode {
 
                                 //gobble up spike2 artifacts
                                 new ParallelCommandGroup(
-                                        new FollowPathCommand( robot.follower, eatPGPPath, true),
+                                        new FollowPathCommand( robot.follower, eatPGPPath, true).setGlobalMaxPower(0.5),
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
                                         new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000)
 
