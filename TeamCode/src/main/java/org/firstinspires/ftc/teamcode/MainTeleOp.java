@@ -14,6 +14,7 @@ import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
+import org.firstinspires.ftc.teamcode.Commands.CancelPedroCommand;
 import org.firstinspires.ftc.teamcode.Commands.DetectArtifactCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
@@ -96,9 +97,6 @@ public class MainTeleOp extends CommandOpMode {
 
                 );
 
-//        operator.getGamepadButton(GamepadKeys.Button.X)
-//                .whenPressed(new InstantCommand( robot.feederF::forwardTogal)
-//                        );
 
 
         operator.getGamepadButton(GamepadKeys.Button.B)
@@ -133,22 +131,40 @@ public class MainTeleOp extends CommandOpMode {
         driver.getGamepadButton(GamepadKeys.Button.Y).
                 whenPressed(new InstantCommand(robot.gate::close, robot.gate));
 
+        driver.getGamepadButton(GamepadKeys.Button.BACK)
+                        .whenPressed(new CancelPedroCommand());
+
 
 
         driver.getGamepadButton(GamepadKeys.Button.B).
                 whenPressed(
                         new SequentialCommandGroup(
+                                //close gate
+                                new InstantCommand(robot.gate::close, robot.gate),
+                                //spin up the shooter
                                 new ShooterSpinUpCommand(robot.shooter, 3850),
-                                new DriveToPoseCommand(shootFarPose, driver),
+                                //drive to alliance-specific code
+                                new DriveToPoseCommand(robot.getShootPose(), driver),
+                                //shoot first ball
                                 new ParallelCommandGroup(
-                                        new InstantCommand(robot.gate::open, robot.gate),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
+                                ),
+                                new WaitCommand(250),
+                                //shoot second ball
+                                new ParallelCommandGroup(
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
                                         new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000)
                                 ),
-                                new WaitCommand(250),
-                                new InstantCommand(robot.gate::close, robot.gate),
-                                new ShooterSpinUpCommand(robot.shooter, 0)
+                                //cleanup
+                                new ParallelCommandGroup(
+                                    new InstantCommand(robot.gate::open, robot.gate),
+                                    new ShooterSpinUpCommand(robot.shooter, 0),
+                                    new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 100),
+                                    new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
+                                    new IntakeCommand(robot.intake, Intake.MotorState.STOP,  100)
+                                )
                         )
         );
 
