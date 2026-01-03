@@ -20,7 +20,7 @@ public class  MecanumDrive extends SubsystemBase {
 
     private double controlAuthority;
     private final double DEGRADE_AUTHORITY = 0.35;
-    private final double MAX_AUTHORITY = 0.85;
+    private final double MAX_AUTHORITY = 0.80;
 
 
     /**

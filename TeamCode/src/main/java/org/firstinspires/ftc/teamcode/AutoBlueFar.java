@@ -26,18 +26,18 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 //@Disabled
-@Autonomous(name="AutoBlueFar", preselectTeleOp = "MainTeleOp", group="Autonomous")
+@Autonomous(name="AutoBlueFar", preselectTeleOp = "MainTeleOp", group="Competition")
 public class AutoBlueFar extends CommandOpMode {
     Robot robot = Robot.getInstance();
 
     private ElapsedTime timer;
     private final Pose startPose = new Pose(64, 9, Math.toRadians(-90));
     private final Pose rotatedPose = new Pose(56, 12, Math.toRadians(-66));
-    private final Pose artifactsGPPPose = new Pose(56, 36.5, Math.toRadians(180));
-    private final Pose collectGPPPose = new Pose(20, 36.5, Math.toRadians(180));
-    private final Pose shootFarPose = new Pose(56, 12, Math.toRadians(-66));
+    private final Pose artifactsGPPPose = new Pose(56, 35.0, Math.toRadians(180));
+    private final Pose collectGPPPose = new Pose(24, 35.0, Math.toRadians(180));
+    private final Pose shootFarPose = new Pose(56, 12, Math.toRadians(-68));
     private final Pose artifactPGPPose = new Pose(56, 60, Math.toRadians(180));
-    private final Pose collectPGPPose = new Pose(20, 60, Math.toRadians(180));
+    private final Pose collectPGPPose = new Pose(24, 60, Math.toRadians(180));
 
 
     private PathChain rotateToShootPath, shootToGPPSpikePath, eatGPPPath, endGPPToShootPath, shootToPGPSpikePath,
@@ -120,7 +120,7 @@ public class AutoBlueFar extends CommandOpMode {
                                     new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
                                     new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
                                 ),
-                            new WaitCommand(250),
+                            new ShooterSpinUpCommand(robot.shooter, 3850),
                             //shoot second ball
                             new ParallelCommandGroup(
                                     new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
@@ -138,36 +138,38 @@ public class AutoBlueFar extends CommandOpMode {
                             ),
                             //gobble up the balls on spike1
                             new ParallelCommandGroup(
-                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 3000),
-                                    new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  3000),
-                                    new FollowPathCommand( robot.follower, eatGPPPath, true)
+                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
+                                    new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000),
+                                    new FollowPathCommand( robot.follower, eatGPPPath, true).setGlobalMaxPower(0.75)
                             ),
 
                             new GateCommand(robot.gate, Gate.GateState.CLOSED),
 
                             new ParallelCommandGroup(
+
                                     new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 250),
                                     new IntakeCommand(robot.intake, Intake.MotorState.STOP,  250),
-                                    new FollowPathCommand(robot.follower, endGPPToShootPath, true)
+                                    new FollowPathCommand(robot.follower, endGPPToShootPath, true).setGlobalMaxPower(1.0),
+                                    new ShooterSpinUpCommand(robot.shooter, 3850)
                             ),
                             //get ready to shoot
-                            new ShooterSpinUpCommand(robot.shooter, 3850),
+
     //                      //shoot both balls and fix this later
                             new ParallelCommandGroup(
                                     new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
                                     new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
                             ),
-                            new WaitCommand(250),
+                            new ShooterSpinUpCommand(robot.shooter, 3850),
 
                             new ParallelCommandGroup(
-                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
-                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
-                                    new IntakeCommand(robot.intake, Intake.MotorState.FORWARD, 2000)
+                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1750),
+                                    new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1750),
+                                    new IntakeCommand(robot.intake, Intake.MotorState.FORWARD, 1750)
                             )   ,
 
                             //move to spike2 and shut off systems
                             new ParallelCommandGroup(
-                                    new FollowPathCommand(robot.follower, shootToPGPSpikePath, true),
+                                    new FollowPathCommand(robot.follower, shootToPGPSpikePath, true).setGlobalMaxPower(1.0),
                                     new ShooterSpinUpCommand(robot.shooter,0.0),
                                     new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 100),
                                     new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
@@ -177,14 +179,15 @@ public class AutoBlueFar extends CommandOpMode {
 
                             //gobble up spike2 balls
                                 new ParallelCommandGroup(
-                                        new FollowPathCommand( robot.follower, eatPGPPath, true),
-                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 3000),
-                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  3000)
+                                        new FollowPathCommand( robot.follower, eatPGPPath, true).setGlobalMaxPower(0.75),
+                                        new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 2000),
+                                        new IntakeCommand(robot.intake, Intake.MotorState.FORWARD,  2000)
                                 ),
+                                new GateCommand(robot.gate, Gate.GateState.CLOSED),
                                 //prepare and move to shoot position
                                 new ParallelCommandGroup(
-                                        new GateCommand(robot.gate, Gate.GateState.CLOSED),
-                                        new FollowPathCommand(robot.follower, endPGPToShootPath, true),
+
+                                        new FollowPathCommand(robot.follower, endPGPToShootPath, true).setGlobalMaxPower(1.0),
                                         new ShooterSpinUpCommand(robot.shooter,3850),
                                         new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 100),
                                         new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),
@@ -195,7 +198,8 @@ public class AutoBlueFar extends CommandOpMode {
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 1000),
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederF, 1000)
                                 ),
-                                new WaitCommand(250),
+                                new ShooterSpinUpCommand(robot.shooter, 3850),
+
                                 //shoot second ball
                                 new ParallelCommandGroup(
                                         new FeederCommand(Feeder.FeederState.FORWARD, robot.feederR, 2000),
@@ -205,7 +209,7 @@ public class AutoBlueFar extends CommandOpMode {
                                 //park outside of launch zone and power down subsystems
                                 new ParallelCommandGroup(
                                     new GateCommand(robot.gate, Gate.GateState.OPEN),
-                                    new FollowPathCommand(robot.follower, shootToGPPSpikePath, true),
+                                    new FollowPathCommand(robot.follower, shootToGPPSpikePath, true).setGlobalMaxPower(1.0),
                                     new ShooterSpinUpCommand(robot.shooter,0.0),
                                     new FeederCommand(Feeder.FeederState.STOP, robot.feederR, 100),
                                     new FeederCommand(Feeder.FeederState.STOP, robot.feederF, 100),

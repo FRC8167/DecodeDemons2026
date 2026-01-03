@@ -11,6 +11,8 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMU;
+import org.firstinspires.ftc.teamcode.Cogintilities.MirrorUtility;
 import org.firstinspires.ftc.teamcode.Commands.DetectArtifactCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeederCommand;
 import org.firstinspires.ftc.teamcode.Commands.IntakeCommand;
@@ -24,14 +26,14 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 //@Disabled
-@Autonomous(name="AutoBlueSimpleParkClose" ,preselectTeleOp = "MainTeleOp", group="Autonomous")
+@Autonomous(name="AutoBlueSimpleParkClose" ,preselectTeleOp = "MainTeleOp", group="Competition")
 public class AutoBlueSimpleParkClose extends CommandOpMode {
     Robot robot = Robot.getInstance();
 
     private ElapsedTime timer;
-    private final Pose startPose = new Pose(18, 114, Math.toRadians(0));
+    private final Pose startPose = new Pose(26.5, 126.5, Math.toRadians(-45));
     private final Pose shootClosePose = new Pose(60, 78, Math.toRadians(-45));
-    private final Pose endParkPose = new Pose(50, 68, Math.toRadians(-45));
+    private final Pose endParkPose = new Pose(22, 108, Math.toRadians(-45));
 
 
 
@@ -75,7 +77,7 @@ public class AutoBlueSimpleParkClose extends CommandOpMode {
                 new ParallelCommandGroup(
                         new DetectArtifactCommand(robot.rgbLight, robot.colorMatch), // robot.shooter),
                         new VisionCommand(robot.vision),
-
+                new SequentialCommandGroup(
                         //move to launch zone
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robot.follower, path1, true),
@@ -104,7 +106,7 @@ public class AutoBlueSimpleParkClose extends CommandOpMode {
 
                         )
 
-
+                )
 
         );
 

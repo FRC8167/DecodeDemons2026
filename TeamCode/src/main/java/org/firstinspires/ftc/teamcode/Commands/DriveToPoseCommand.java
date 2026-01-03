@@ -5,7 +5,10 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.paths.PathChain;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.pedropathing.geometry.Pose;
+import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
+
 import org.firstinspires.ftc.teamcode.Robot;
 
 
@@ -14,6 +17,7 @@ public class DriveToPoseCommand extends CommandBase {
     private final Pose targetPose; // target pose including heading
     private final Robot robot;
     private final GamepadEx driver;
+
 
 
     public DriveToPoseCommand(Pose targetPose, GamepadEx driver)
@@ -37,8 +41,8 @@ public class DriveToPoseCommand extends CommandBase {
                         targetPose.getHeading()
                 )
                 .build();
-
-        robot.follower.followPath(pathToShoot);
+//        new FollowPathCommand(robot.follower, pathToShoot, true);
+        robot.follower.followPath(pathToShoot, true);
 
 
 
@@ -47,7 +51,7 @@ public class DriveToPoseCommand extends CommandBase {
 
     @Override
     public void execute() {
-
+        robot.follower.update();
     }
 
     @Override

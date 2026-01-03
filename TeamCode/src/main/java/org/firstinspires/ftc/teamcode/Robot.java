@@ -49,7 +49,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
     }
 
     //field poses
-    public static final Pose BLUE_SHOOT_FAR_POSE = new Pose(56, 12, Math.toRadians(-66));
+    public static final Pose BLUE_SHOOT_FAR_POSE = MirrorUtility.mirror(new Pose(56, 12, Math.toRadians(-72)));
     private static final Pose RED_SHOOT_FAR_POSE = MirrorUtility.mirror(new Pose(56, 12, Math.toRadians(-72)));
 
     private Alliance alliance = Alliance.UNSPECIFIED;

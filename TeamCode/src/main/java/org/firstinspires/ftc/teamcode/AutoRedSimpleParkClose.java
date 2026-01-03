@@ -25,14 +25,17 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 //@Disabled
-@Autonomous(name="AutoRedSimpleParkClose" ,preselectTeleOp = "MainTeleOp", group="Autonomous")
+@Autonomous(name="AutoRedSimpleParkClose" ,preselectTeleOp = "MainTeleOp", group="Competition")
 public class AutoRedSimpleParkClose extends CommandOpMode {
     Robot robot = Robot.getInstance();
 
     private ElapsedTime timer;
-    private final Pose startPose = MirrorUtility.mirror(new Pose(18, 114,Math.toRadians(0)));
-    private final Pose shootClosePose = MirrorUtility.mirror(new Pose(60, 78, Math.toRadians(-45)));
-    private final Pose endParkPose = MirrorUtility.mirror(new Pose(50, 68, Math.toRadians(-45)));
+
+//    private final Pose endParkPose = MirrorUtility.mirror(new Pose(22, 78, Math.toRadians(-45)));
+    private final Pose endParkPose = new Pose(122, 108, Math.toRadians(-135));
+    private final Pose startPose = MirrorUtility.mirror(new Pose(26.5, 126.5, Math.toRadians(-45)));
+    private final Pose shootClosePose = new Pose(84, 84, Math.toRadians(-132));
+
 
 
 
@@ -76,9 +79,9 @@ public class AutoRedSimpleParkClose extends CommandOpMode {
                 new ParallelCommandGroup(
                         new DetectArtifactCommand(robot.rgbLight, robot.colorMatch), // robot.shooter),
                         new VisionCommand(robot.vision),
-
+                        new SequentialCommandGroup(
                         //move to launch zone
-                        new ParallelCommandGroup(
+                            new ParallelCommandGroup(
                                 new FollowPathCommand(robot.follower, path1, true),
                                 new ShooterSpinUpCommand(robot.shooter, 3400)
                         ),
@@ -105,7 +108,7 @@ public class AutoRedSimpleParkClose extends CommandOpMode {
 
                         )
 
-
+                )
         );
 
     }
